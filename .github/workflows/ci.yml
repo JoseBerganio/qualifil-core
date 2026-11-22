@@ -1,0 +1,161 @@
+name: QUALIFIL CI
+
+on:
+  push:
+    branches:
+      - main
+      - "sprint/**"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qualifil-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements/**
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f backend/requirements/dev.txt ]; then
+            pip install -r backend/requirements/dev.txt
+          elif [ -f backend/requirements.txt ]; then
+            pip install -r backend/requirements.txt
+          else
+            echo "No backend requirements file found yet; skipping dependency installation."
+          fi
+
+      - name: Run backend tests
+        working-directory: backend
+        run: |
+          if [ -d tests ] || find . -name "test_*.py" -o -name "*_tests.py" | grep -q .; then
+            python -m pytest
+          else
+            echo "No backend tests found yet."
+          fi
+
+  ai-service-tests:
+    name: AI Service Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install AI service dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f ai-service/requirements.txt ]; then
+            pip install -r ai-service/requirements.txt
+          elif [ -f ai-service/pyproject.toml ]; then
+            pip install ai-service
+          else
+            echo "No AI service dependency manifest found yet; skipping dependency installation."
+          fi
+
+      - name: Run AI service tests
+        working-directory: ai-service
+        run: |
+          if [ -d tests ] || find . -name "test_*.py" -o -name "*_tests.py" | grep -q .; then
+            python -m pytest
+          else
+            echo "No AI service tests found yet."
+          fi
+
+  web-checks:
+    name: Web Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install web dependencies
+        working-directory: web
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f package.json ]; then
+            npm install
+          else
+            echo "No web package manifest found yet; skipping web checks."
+          fi
+
+      - name: Run web checks
+        working-directory: web
+        run: |
+          if [ -f package.json ]; then
+            npm run build --if-present
+            npm run lint --if-present
+            npm test -- --run
+          else
+            echo "Web application has not been initialized yet."
+          fi
+
+  mobile-checks:
+    name: Mobile Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install mobile dependencies
+        working-directory: mobile
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f package.json ]; then
+            npm install
+          else
+            echo "No mobile package manifest found yet; skipping mobile checks."
+          fi
+
+      - name: Run mobile checks
+        working-directory: mobile
+        run: |
+          if [ -f package.json ]; then
+            npm run lint --if-present
+            npm test -- --run
+            npx tsc --noEmit
+          else
+            echo "Mobile application has not been initialized yet."
+          fi
