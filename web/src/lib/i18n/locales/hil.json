@@ -1,0 +1,17 @@
+{
+  "app": { "title": "QUALIFIL" },
+  "nav": { "status": "Katayuan sang application" },
+  "language-group-label": "Panihapon sang pgged",
+  "appStatus": {
+    "pageTitle": "Katayuan sang application",
+    "pageDescription": "Amlo (live) nga katayuan sang mga serbisyo sang QUALIFIL backend.",
+    "environment": "Environment",
+    "version": "Bersyon",
+    "statusLabel": "Katayuan",
+    "status": { "ok": "Gumagana", "degraded": "Bahagi lang", "unknown": "Dinggano" },
+    "loading": "Nagalo-load...",
+    "error": "Wala natandud ang katayuan sang application",
+    "retry": "Pagsuliton liwat"
+  },
+  "language": { "en": "English", "fil": "Filipino", "hil": "Hiligaynon" }
+}

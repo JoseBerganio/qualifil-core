@@ -1,0 +1,17 @@
+{
+  "app": { "title": "QUALIFIL" },
+  "nav": { "status": "Katayuan ng application" },
+  "language-group-label": "Pumili ng wika",
+  "appStatus": {
+    "pageTitle": "Katayuan ng application",
+    "pageDescription": "Live na katayuan ng mga serbisyo ng QUALIFIL backend.",
+    "environment": "Environment",
+    "version": "Bersyon",
+    "statusLabel": "Katayuan",
+    "status": { "ok": "Gumagana", "degraded": "Bahagi lang ang sumusunod", "unknown": "Hindi alam" },
+    "loading": "Naglo-load...",
+    "error": "Hindi nadikit ang katayuan ng application",
+    "retry": "Subukan ulit"
+  },
+  "language": { "en": "Ingles", "fil": "Filipino", "hil": "Hiligaynon" }
+}

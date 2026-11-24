@@ -119,19 +119,20 @@ jobs:
           elif [ -f package.json ]; then
             npm install
           else
-            echo "No web package manifest found yet; skipping web checks."
+            echo "No web package manifest found; web checks must not be skipped." >&2
+            exit 1
           fi
 
       - name: Run web checks
         working-directory: web
         run: |
-          if [ -f package.json ]; then
-            npm run build --if-present
-            npm run lint --if-present
-            npm test -- --run
-          else
-            echo "Web application has not been initialized yet."
+          if [ ! -f package.json ]; then
+            echo "Web package.json is missing; web checks must not be skipped." >&2
+            exit 1
           fi
+          npm run build --if-present
+          npm run lint --if-present
+          npm test -- --run
 
   mobile-checks:
     name: Mobile Checks
@@ -156,16 +157,17 @@ jobs:
           elif [ -f package.json ]; then
             npm install
           else
-            echo "No mobile package manifest found yet; skipping mobile checks."
+            echo "No mobile package manifest found; mobile checks must not be skipped." >&2
+            exit 1
           fi
 
       - name: Run mobile checks
         working-directory: mobile
         run: |
-          if [ -f package.json ]; then
-            npm run lint --if-present
-            npm test -- --run
-            npx tsc --noEmit
-          else
-            echo "Mobile application has not been initialized yet."
+          if [ ! -f package.json ]; then
+            echo "Mobile package.json is missing; mobile checks must not be skipped." >&2
+            exit 1
           fi
+          npm run lint --if-present
+          npm test -- --run
+          npx tsc --noEmit

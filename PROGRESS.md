@@ -4,7 +4,7 @@
 
 - Project: QUALIFIL
 - Current target release: v0.1.0
-- Current sprint: 01C — AI Service Foundation
+- Current sprint: 01D — Web Foundation
 - Overall status: In Progress
 - Last updated: 2026-11-24
 
@@ -25,7 +25,7 @@ Status: In Progress
 - [x] 01A — Project Structure and CI Foundation
 - [x] 01B — Backend Foundation
 - [x] 01C — AI Service Foundation
-- [ ] 01D — Web Foundation
+- [x] 01D — Web Foundation
 - [ ] 01E — Mobile Foundation
 
 ### v0.2.0 — Authentication and Core Data
@@ -99,6 +99,20 @@ Implemented:
 
 Model loading and inference remain deferred to v0.3.0 as specified by the sprint plan.
 
+### Sprint 01D — Web Foundation
+
+Branch: `sprint/01d-web-foundation`
+
+Implemented:
+
+- React 18 + Vite 5 + TypeScript web application scaffold (`web/`).
+- Tailwind CSS 3 with the HSL token theme and shadcn/ui style `Button` component.
+- Routing with `react-router-dom` (`/` and `/status`).
+- Context-based localization (`I18nProvider`, `useTranslation`) with locale switch persistence in localStorage.
+- Fetch-based API client (`apiGet`, `apiPost`) for the Django backend; `getAppStatus()` calls `GET /api/v1/health/`.
+- Initial application status page rendering environment and version with a localized error state.
+- Component, API client, status, i18n, and page tests wired into CI; `web` and `mobile` CI jobs now fail instead of skipping when their manifests are missing.
+
 ## Blockers and Risks
 
 | Date | Sprint | Blocker or Risk | Owner | Resolution | Status |
@@ -111,6 +125,7 @@ Model loading and inference remain deferred to v0.3.0 as specified by the sprint
 |---|---|---|---|
 | 2026-11-24 | 01B | Django backend foundation with PostgreSQL, pgvector, Redis, Celery, storage, structured errors/logging, Docker, and CI tests. | `sprint/01b-backend-foundation` |
 | 2026-11-24 | 01C | FastAPI AI service foundation with internal authentication, health and model-status endpoints, standardized schemas/errors, Docker integration, and CI tests. | `sprint/01c-ai-service-foundation` |
+| 2026-11-24 | 01D | React web application foundation with Vite, TypeScript, Tailwind, shadcn/ui style components, routing, localization, Django API client, initial application status page, and CI web checks. | `sprint/01d-web-foundation` |
 
 ## Change Log for This File
 
@@ -118,3 +133,4 @@ Record meaningful progress updates here. Detailed version changes belong in `CHA
 
 - YYYY-MM-DD — Initial progress tracker created.
 - 2026-11-24 — Recorded Sprint 01B completion and Sprint 01C AI service foundation.
+- 2026-11-24 — Recorded Sprint 01D web foundation completion.

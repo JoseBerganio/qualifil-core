@@ -268,12 +268,21 @@ Actual model loading and inference are deferred to v0.3.0.
 
 ## Sprint 01D — Web Application Foundation
 
+**Status: Completed**  
 **Branch:** `sprint/01d-web-foundation`  
 **Duration:** 4 working days  
 **Dependencies:** 01B
 
 ### Objective
 Establish the React web application and its initial frontend architecture.
+
+### Implementation Summary
+- Initialized the web application with Vite, TypeScript, and React.
+- Configured Tailwind CSS and the shadcn/ui style `Button` component.
+- Established routing with `react-router-dom` and English, Filipino, and Hiligaynon localization via a context-based i18n provider with a language switcher.
+- Established the fetch-based API client and an initial application status page that calls `GET /api/v1/health/`.
+- Configured frontend testing with Vitest, jsdom, and Testing Library.
+- CI: `web-checks` and `mobile-checks` jobs no longer skip when the manifests are missing; they fail instead.
 
 ### Implementation Tasks
 
