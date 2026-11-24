@@ -21,6 +21,25 @@ jobs:
     name: Backend Tests
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18
+        env:
+          POSTGRES_DB: qualifil_test
+          POSTGRES_USER: qualifil_test
+          POSTGRES_PASSWORD: qualifil_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U qualifil_test" --health-interval 10s
+          --health-timeout 5s --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://qualifil_test:qualifil_test@localhost:5432/qualifil_test
+      CELERY_BROKER_URL: redis://localhost:6379/1
+      CELERY_RESULT_BACKEND: redis://localhost:6379/2
+      REDIS_URL: redis://localhost:6379/0
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,22 +54,11 @@ jobs:
       - name: Install backend dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f backend/requirements/dev.txt ]; then
-            pip install -r backend/requirements/dev.txt
-          elif [ -f backend/requirements.txt ]; then
-            pip install -r backend/requirements.txt
-          else
-            echo "No backend requirements file found yet; skipping dependency installation."
-          fi
+          pip install -r backend/requirements/dev.txt
 
       - name: Run backend tests
         working-directory: backend
-        run: |
-          if [ -d tests ] || find . -name "test_*.py" -o -name "*_tests.py" | grep -q .; then
-            python -m pytest
-          else
-            echo "No backend tests found yet."
-          fi
+        run: python -m pytest
 
   ai-service-tests:
     name: AI Service Tests

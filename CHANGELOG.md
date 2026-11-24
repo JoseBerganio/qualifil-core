@@ -9,6 +9,17 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
 ### Added
 - Initial sprint and release planning structure.
 - Initial repository documentation templates.
+- QUALIFIL backend (Django + Django REST Framework) foundation for v0.1.0:
+  - Modular Django settings for development and testing.
+  - Django REST Framework configuration with the standardized error handler.
+  - `/api/v1/` API namespace with liveness and readiness health endpoints.
+  - PostgreSQL 18 + pgvector configuration with a pgvector extension system check.
+  - Redis caching and Celery background-processing configuration.
+  - Standardized API error responses and Django-level 404/500 handlers.
+  - Structured request logging with JSON formatting and request IDs.
+  - S3-compatible storage configuration for development.
+  - Docker and Docker Compose services for the backend, database, Redis, and worker.
+  - pytest/pytest-django setup with backend tests wired into CI.
 
 ### Changed
 - Nothing yet.
@@ -17,7 +28,7 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
 - Nothing yet.
 
 ### Security
-- Nothing yet.
+- Secrets and credentials are read from environment variables so they stay out of version control.
 
 ## [0.1.0] — Not Released
 

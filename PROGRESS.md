@@ -4,8 +4,8 @@
 
 - Project: QUALIFIL
 - Current target release: v0.1.0
-- Current sprint: Not started
-- Overall status: Planned
+- Current sprint: 01B — Backend Foundation
+- Overall status: In Progress
 - Last updated: YYYY-MM-DD
 
 ## Status Definitions
@@ -22,8 +22,8 @@
 
 Status: Planned
 
-- [ ] 01A — Project Structure and CI Foundation
-- [ ] 01B — Backend Foundation
+- [x] 01A — Project Structure and CI Foundation
+- [x] 01B — Backend Foundation
 - [ ] 01C — AI Service Foundation
 - [ ] 01D — Web Foundation
 - [ ] 01E — Mobile Foundation
