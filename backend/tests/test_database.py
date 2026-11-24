@@ -1,6 +1,9 @@
 """Database and cache connectivity tests (Sprint 01B)."""
 
+import pytest
 
+
+@pytest.mark.django_db
 def test_database_ping():
     from django.db import connection
 
