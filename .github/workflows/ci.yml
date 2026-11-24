@@ -77,21 +77,23 @@ jobs:
       - name: Install AI service dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f ai-service/requirements.txt ]; then
+          if [ -f ai-service/requirements-dev.txt ]; then
+            pip install -r ai-service/requirements-dev.txt
+          elif [ -f ai-service/requirements.txt ]; then
             pip install -r ai-service/requirements.txt
           elif [ -f ai-service/pyproject.toml ]; then
             pip install ai-service
           else
-            echo "No AI service dependency manifest found yet; skipping dependency installation."
+            echo "No AI service dependency manifest found; skipping dependency installation."
           fi
 
       - name: Run AI service tests
         working-directory: ai-service
         run: |
           if [ -d tests ] || find . -name "test_*.py" -o -name "*_tests.py" | grep -q .; then
-            python -m pytest
+            python -m pytest -q
           else
-            echo "No AI service tests found yet."
+            echo "No AI service tests found."
           fi
 
   web-checks:

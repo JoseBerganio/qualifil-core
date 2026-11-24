@@ -20,6 +20,17 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
   - S3-compatible storage configuration for development.
   - Docker and Docker Compose services for the backend, database, Redis, and worker.
   - pytest/pytest-django setup with backend tests wired into CI.
+- QUALIFIL AI service (FastAPI) foundation for v0.1.0:
+  - Application factory with modular `api`, `core`, `schemas`, and provider/service packages.
+  - Environment-based settings with validation and production key enforcement.
+  - Internal service authentication using the `X-Internal-API-Key` header.
+  - Public liveness and readiness endpoints.
+  - Internal model-status endpoint reporting configured models as `not_loaded`.
+  - Standardized error envelope shared with the Django backend.
+  - Request-ID handling and structured request logging.
+  - Docker image and Docker Compose service integration.
+  - AI service pytest suite wired into CI.
+  - Internal API contract documented in `docs/api/AI_SERVICE.md`.
 
 ### Changed
 - Nothing yet.

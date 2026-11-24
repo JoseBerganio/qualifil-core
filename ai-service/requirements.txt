@@ -1,0 +1,6 @@
+# QUALIFIL AI service - runtime dependencies.
+# Versions follow the documented project stack (README.md, SPRINT.md).
+
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+pydantic>=2.7,<3

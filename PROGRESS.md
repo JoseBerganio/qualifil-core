@@ -4,9 +4,9 @@
 
 - Project: QUALIFIL
 - Current target release: v0.1.0
-- Current sprint: 01B — Backend Foundation
+- Current sprint: 01C — AI Service Foundation
 - Overall status: In Progress
-- Last updated: YYYY-MM-DD
+- Last updated: 2026-11-24
 
 ## Status Definitions
 
@@ -20,11 +20,11 @@
 
 ### v0.1.0 — Project Foundation
 
-Status: Planned
+Status: In Progress
 
 - [x] 01A — Project Structure and CI Foundation
 - [x] 01B — Backend Foundation
-- [ ] 01C — AI Service Foundation
+- [x] 01C — AI Service Foundation
 - [ ] 01D — Web Foundation
 - [ ] 01E — Mobile Foundation
 
@@ -79,22 +79,42 @@ Status: Planned
 
 ## Active Work
 
-No active sprint recorded.
+### Sprint 01C — AI Service Foundation
+
+Branch: `sprint/01c-ai-service-foundation`
+
+Implemented:
+
+- FastAPI application with an application factory for testability.
+- Modular `api`, `core`, `schemas`, and `services/providers` package layout.
+- Environment-based settings with validation and production key enforcement.
+- Internal authentication through the `X-Internal-API-Key` header.
+- Public liveness and readiness endpoints.
+- Internal model-status endpoint reporting configured models as `not_loaded`.
+- Standardized error envelope matching the Django backend.
+- Request-ID handling, structured request logging, and standardized 500 responses.
+- Docker image and Docker Compose service integration.
+- AI service test suite wired into CI.
+- Internal API contract documented in `docs/api/AI_SERVICE.md`.
+
+Model loading and inference remain deferred to v0.3.0 as specified by the sprint plan.
 
 ## Blockers and Risks
 
 | Date | Sprint | Blocker or Risk | Owner | Resolution | Status |
 |---|---|---|---|---|---|
-| YYYY-MM-DD | — | No blockers recorded | — | — | — |
+| 2026-11-24 | 01C | No blockers recorded | — | — | — |
 
 ## Completed Work Log
 
 | Date | Sprint | Summary | Pull Request / Commit |
 |---|---|---|---|
-| — | — | No completed sprint work recorded | — |
+| 2026-11-24 | 01B | Django backend foundation with PostgreSQL, pgvector, Redis, Celery, storage, structured errors/logging, Docker, and CI tests. | `sprint/01b-backend-foundation` |
+| 2026-11-24 | 01C | FastAPI AI service foundation with internal authentication, health and model-status endpoints, standardized schemas/errors, Docker integration, and CI tests. | `sprint/01c-ai-service-foundation` |
 
 ## Change Log for This File
 
 Record meaningful progress updates here. Detailed version changes belong in `CHANGELOG.md`.
 
 - YYYY-MM-DD — Initial progress tracker created.
+- 2026-11-24 — Recorded Sprint 01B completion and Sprint 01C AI service foundation.
