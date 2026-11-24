@@ -36,7 +36,7 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
 - Nothing yet.
 
 ### Fixed
-- Nothing yet.
+- CI web and mobile jobs now skip cleanly until those applications are initialized in Sprints 01D and 01E.
 
 ### Security
 - Secrets and credentials are read from environment variables so they stay out of version control.
