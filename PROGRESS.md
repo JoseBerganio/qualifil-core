@@ -4,9 +4,9 @@
 
 - Project: QUALIFIL
 - Current target release: v0.1.0
-- Current sprint: 01D — Web Foundation
+- Current sprint: 01E — Mobile Foundation
 - Overall status: In Progress
-- Last updated: 2026-11-24
+- Last updated: 2026-11-26
 
 ## Status Definitions
 
@@ -26,7 +26,7 @@ Status: In Progress
 - [x] 01B — Backend Foundation
 - [x] 01C — AI Service Foundation
 - [x] 01D — Web Foundation
-- [ ] 01E — Mobile Foundation
+- [x] 01E — Mobile Foundation
 
 ### v0.2.0 — Authentication and Core Data
 
@@ -113,6 +113,34 @@ Implemented:
 - Initial application status page rendering environment and version with a localized error state.
 - Component, API client, status, i18n, and page tests wired into CI; `web` and `mobile` CI jobs now fail instead of skipping when their manifests are missing.
 
+### Sprint 01E — Mobile Foundation
+
+Branch: `sprint/01e-mobile-foundation`
+
+Implemented:
+
+- Expo SDK 58 + React Native 0.88 + TypeScript application scaffold (`mobile/`).
+- React Navigation native stack with a backend connectivity screen and a settings screen.
+- English, Filipino, and Hiligaynon localization via an AsyncStorage-backed provider and language switcher.
+- Secure token storage abstraction using `expo-secure-store` on native platforms and an explicitly documented in-memory fallback on web.
+- Mobile API layer built on the shared `@qualifil/api-client` package.
+- Component, API, storage, localization, and screen tests using `jest-expo` and React Native Testing Library.
+- Reusable theme tokens and `Screen`, `Button`, `StatusCard`, and `LanguageSwitcher` components.
+- Mobile lint, typecheck, and test checks wired into CI through the npm workspace.
+
+### Cross-Cutting Foundation Fixes
+
+Implemented before Sprint 01E:
+
+- Added `packages/api-client` as a shared npm workspace consumed by web and mobile.
+- Added real `.env` loading (`python-dotenv`) for the Django and FastAPI services, with real environment variables taking precedence.
+- Normalized API base URLs so `VITE_API_BASE_URL` and `EXPO_PUBLIC_API_BASE_URL` are origins, not `/api`-suffixed paths; Vite now reads the root `.env` via `envDir`.
+- Added `django-cors-headers` with a configurable `DJANGO_CORS_ALLOWED_ORIGINS` allowlist alongside the Vite dev proxy.
+- Downgraded an unreachable database during `manage.py check` from an error to the `api.W001` warning, and made the database connectivity test skip when PostgreSQL is unavailable.
+- Replaced the no-op web ESLint configuration with real TypeScript and React Hooks rules; added matching lint setups for the shared client and mobile app.
+- Added Prettier, `.editorconfig`, and formatting scripts.
+- Reworked CI to install the npm workspace from the repository root and run shared client, web, and mobile checks.
+
 ## Blockers and Risks
 
 | Date | Sprint | Blocker or Risk | Owner | Resolution | Status |
@@ -126,6 +154,7 @@ Implemented:
 | 2026-11-24 | 01B | Django backend foundation with PostgreSQL, pgvector, Redis, Celery, storage, structured errors/logging, Docker, and CI tests. | `sprint/01b-backend-foundation` |
 | 2026-11-24 | 01C | FastAPI AI service foundation with internal authentication, health and model-status endpoints, standardized schemas/errors, Docker integration, and CI tests. | `sprint/01c-ai-service-foundation` |
 | 2026-11-24 | 01D | React web application foundation with Vite, TypeScript, Tailwind, shadcn/ui style components, routing, localization, Django API client, initial application status page, and CI web checks. | `sprint/01d-web-foundation` |
+| 2026-11-26 | 01E | Expo mobile application foundation with navigation, localization, secure token storage, shared API client integration, backend connectivity screen, and mobile CI checks. Also introduced the shared `@qualifil/api-client` workspace and fixed environment, CORS, lint, and CI foundations. | `sprint/01e-mobile-foundation` |
 
 ## Change Log for This File
 
@@ -134,3 +163,4 @@ Record meaningful progress updates here. Detailed version changes belong in `CHA
 - YYYY-MM-DD — Initial progress tracker created.
 - 2026-11-24 — Recorded Sprint 01B completion and Sprint 01C AI service foundation.
 - 2026-11-24 — Recorded Sprint 01D web foundation completion.
+- 2026-11-26 — Recorded Sprint 01E mobile foundation completion and cross-cutting foundation fixes.

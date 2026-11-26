@@ -47,8 +47,6 @@ describe("AppStatusPage", () => {
       </I18nProvider>,
     );
 
-    expect(
-      await screen.findByText(/could not load application status/i),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/could not load application status/i)).toBeInTheDocument();
   });
 });

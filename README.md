@@ -154,14 +154,15 @@ qualifil/
 │   │   └── types/
 │   └── public/
 ├── mobile/
-│   ├── app/
 │   ├── src/
+│   │   ├── app/
 │   │   ├── components/
-│   │   ├── features/
-│   │   ├── hooks/
-│   │   ├── services/
-│   │   └── types/
+│   │   ├── lib/
+│   │   └── screens/
 │   └── assets/
+├── packages/
+│   └── api-client/
+│       └── src/
 ├── knowledge-base/
 │   └── programs_seed.json
 ├── docs/
@@ -203,16 +204,29 @@ Use the versions specified by the project's dependency and container configurati
 ### Initial Setup
 
 1. Clone the repository.
-2. Copy `.env.example` to `.env`.
-3. Configure the local environment variables.
-4. Start the infrastructure services using Docker Compose.
-5. Install backend dependencies.
-6. Apply Django database migrations.
-7. Install web dependencies.
-8. Install mobile dependencies.
-9. Start the required development servers.
+2. Copy `.env.example` to `.env` and configure the local values.
+3. Start PostgreSQL and Redis: `docker compose -f backend/docker-compose.yml up -d db redis`.
+4. Install backend dependencies: `pip install -r backend/requirements/dev.txt`.
+5. Apply migrations: `python backend/manage.py migrate`.
+6. Install the npm workspace: `npm install` (from the repository root).
+7. Start the services you need (see below).
 
-The exact commands should be added here when the initial Docker Compose, backend dependency, web package, and mobile package files are implemented.
+```sh
+# Backend API
+python backend/manage.py runserver
+
+# AI service
+uvicorn app.main:app --app-dir ai-service --port 8001
+
+# Web application
+npm run dev -w qualifil-web
+
+# Mobile application
+npm run start -w qualifil-mobile
+```
+
+The full setup, environment-variable reference, and troubleshooting steps are in
+`docs/runbooks/LOCAL_DEVELOPMENT.md`.
 
 ## Development Workflow
 
@@ -247,8 +261,9 @@ Automated testing is required throughout development.
 
 - Backend: pytest and Django test utilities
 - AI service: pytest
-- Web: the selected TypeScript-compatible test runner
-- Mobile: the selected React Native-compatible test runner
+- Shared client: Vitest
+- Web: Vitest, jsdom, and Testing Library
+- Mobile: `jest-expo` and React Native Testing Library
 - Integration: API and cross-service tests
 
 Tests should cover business rules, authorization, data validation, API behavior, error handling, and critical workflows.

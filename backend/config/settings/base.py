@@ -10,8 +10,14 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent  # backend/
+
+# Load the shared repository .env file. Real environment variables take
+# precedence, so container, CI, and shell configuration is never overwritten
+# by a local file.
+load_dotenv(BASE_DIR.parent / ".env", override=False)
 
 APP_NAME = os.environ.get("APP_NAME", "QUALIFIL")
 APP_ENV = os.environ.get("APP_ENV", "development")
@@ -47,6 +53,18 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+# Cross-origin access for the web client (Vite) and Expo web during development.
+# Native mobile clients are not subject to browser CORS rules.
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in _get_env(
+        "DJANGO_CORS_ALLOWED_ORIGINS",
+        "http://localhost:5173,http://localhost:8081",
+    ).split(",")
+    if origin.strip()
+]
+CORS_ALLOW_CREDENTIALS = _get_bool("DJANGO_CORS_ALLOW_CREDENTIALS", False)
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -54,6 +72,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "rest_framework",
     "api",
     "apps.accounts",
@@ -71,6 +90,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

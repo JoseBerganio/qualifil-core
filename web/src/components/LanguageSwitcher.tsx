@@ -19,9 +19,7 @@ export function LanguageSwitcher() {
           onClick={() => setLocale(code)}
           className={clsx(
             "rounded-md px-2 py-1",
-            locale === code
-              ? "font-semibold underline"
-              : "text-muted-foreground",
+            locale === code ? "font-semibold underline" : "text-muted-foreground",
           )}
         >
           {t(`language.${code}`)}

@@ -1,0 +1,12 @@
+node_modules
+**/node_modules
+dist
+**/dist
+build
+coverage
+.expo
+web-build
+package-lock.json
+*.tsbuildinfo
+mobile/assets
+*.md

@@ -3,7 +3,23 @@
 import pytest
 
 
+def _postgres_available() -> bool:
+    """Return whether the configured PostgreSQL database accepts connections."""
+    from django.db import connection
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+        return True
+    except Exception:
+        return False
+
+
 @pytest.mark.django_db
+@pytest.mark.skipif(
+    not _postgres_available(),
+    reason="PostgreSQL is not reachable; start it or set DATABASE_URL.",
+)
 def test_database_ping():
     from django.db import connection
 

@@ -6,6 +6,7 @@ function jsonResponse(data: unknown, ok = true): Response {
   return {
     ok,
     status: ok ? 200 : 500,
+    text: async () => (data === undefined ? "" : JSON.stringify(data)),
     json: async () => data,
   } as Response;
 }
@@ -16,16 +17,14 @@ describe("api client", () => {
   });
 
   describe("apiGet", () => {
-    it("calls fetch with the default Django API base URL", async () => {
-      const fetchMock = vi
-        .fn()
-        .mockResolvedValue(jsonResponse({ status: "ok" }));
+    it("uses a same-origin URL so the dev proxy and browser CORS rules apply", async () => {
+      const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ status: "ok" }));
       vi.stubGlobal("fetch", fetchMock);
 
       const data = await apiGet<{ status: string }>("/api/v1/health/");
 
       expect(fetchMock).toHaveBeenCalledWith(
-        "http://localhost:8000/api/v1/health/",
+        "/api/v1/health/",
         expect.objectContaining({ method: "GET" }),
       );
       expect(data).toEqual({ status: "ok" });
@@ -39,9 +38,7 @@ describe("api client", () => {
 
   describe("apiPost", () => {
     it("posts JSON and returns the parsed body", async () => {
-      const fetchMock = vi
-        .fn()
-        .mockResolvedValue(jsonResponse({ created: true }));
+      const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ created: true }));
       vi.stubGlobal("fetch", fetchMock);
 
       const data = await apiPost("/api/v1/residents/", { name: "Jose" });

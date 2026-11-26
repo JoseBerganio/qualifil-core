@@ -1,31 +1,17 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+import { createApiClient } from "@qualifil/api-client";
 
-export async function apiGet<T = unknown>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: "GET",
-    headers: { Accept: "application/json" },
-  });
-  if (!response.ok) {
-    throw new Error(`API request failed with status ${response.status}`);
-  }
-  return (await response.json()) as T;
+// Empty by default so the Vite dev proxy keeps browser requests same-origin.
+// Production builds set VITE_API_BASE_URL to the public API origin.
+const baseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
+
+const client = createApiClient({ baseUrl });
+
+export function apiGet<T = unknown>(path: string): Promise<T> {
+  return client.get<T>(path);
 }
 
-export async function apiPost<T = unknown>(
-  path: string,
-  body?: unknown,
-): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: "POST",
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body ?? {}),
-  });
-  if (!response.ok) {
-    throw new Error(`API request failed with status ${response.status}`);
-  }
-  return (await response.json()) as T;
+export function apiPost<T = unknown>(path: string, body?: unknown): Promise<T> {
+  return client.post<T>(path, body);
 }
+
+export { ApiError } from "@qualifil/api-client";

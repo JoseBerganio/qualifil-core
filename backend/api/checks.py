@@ -1,11 +1,16 @@
 """System checks for the QUALIFIL backend (Sprint 01B)."""
 
-from django.core.checks import Error, Tags, register
+from django.core.checks import Error, Tags, Warning, register
 
 
 @register(Tags.database)
 def pgvector_extension_check(app_configs=None, **kwargs):
-    """Verify the pgvector extension is enabled on the default database."""
+    """Verify the pgvector extension is enabled on the default database.
+
+    A missing extension is a configuration error. An unreachable database is
+    reported as a warning so that commands such as ``manage.py check`` remain
+    usable before local infrastructure has been started.
+    """
     from django.db import connection
 
     errors = []
@@ -24,9 +29,13 @@ def pgvector_extension_check(app_configs=None, **kwargs):
                 )
     except Exception as exc:
         errors.append(
-            Error(
+            Warning(
                 f"Could not verify the pgvector extension: {exc}",
-                id="api.E002",
+                hint=(
+                    "Start the database (or fix DATABASE_URL) and run "
+                    "manage.py check again."
+                ),
+                id="api.W001",
             )
         )
     return errors

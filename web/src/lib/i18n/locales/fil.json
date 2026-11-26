@@ -8,7 +8,11 @@
     "environment": "Environment",
     "version": "Bersyon",
     "statusLabel": "Katayuan",
-    "status": { "ok": "Gumagana", "degraded": "Bahagi lang ang sumusunod", "unknown": "Hindi alam" },
+    "status": {
+      "ok": "Gumagana",
+      "degraded": "Bahagi lang ang sumusunod",
+      "unknown": "Hindi alam"
+    },
     "loading": "Naglo-load...",
     "error": "Hindi nadikit ang katayuan ng application",
     "retry": "Subukan ulit"

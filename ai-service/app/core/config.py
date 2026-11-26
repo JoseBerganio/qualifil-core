@@ -13,7 +13,15 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from functools import lru_cache
+from pathlib import Path
 from typing import Mapping
+
+from dotenv import load_dotenv
+
+# Load the shared repository .env file. Real environment variables take
+# precedence so container and CI configuration is never overwritten.
+ENV_FILE = Path(__file__).resolve().parents[3] / ".env"
+load_dotenv(ENV_FILE, override=False)
 
 DEFAULT_INTERNAL_API_KEY = "development-only-internal-key"
 

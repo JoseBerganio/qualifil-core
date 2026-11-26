@@ -1,0 +1,23 @@
+{
+  "app": { "title": "QUALIFIL" },
+  "nav": { "connectivity": "Koneksyon sa backend", "settings": "Mga setting" },
+  "language-group-label": "Pili-a ang lengguwahe",
+  "connectivity": {
+    "title": "Koneksyon sa backend",
+    "description": "Tan-awa kon makaabot ini nga device sa QUALIFIL backend.",
+    "environment": "Palibot",
+    "version": "Bersyon",
+    "statusLabel": "Kahimtangan",
+    "status": { "ok": "Nagalihok", "degraded": "Maluya", "unknown": "Wala mahibaluan" },
+    "loading": "Ginacheck ang backend...",
+    "error": "Indi maabot ang backend",
+    "retry": "Sulayi liwat",
+    "openSettings": "Mga setting sang lengguwahe"
+  },
+  "settings": {
+    "title": "Mga setting",
+    "description": "Pilia ang lengguwahe nga gamiton sa application.",
+    "storageNote": "Ang mga access token ginatago sa secure store sang platform. Ang web build nagagamit sang in-memory storage hasta maipatuman ang authentication sa v0.2.0."
+  },
+  "language": { "en": "English", "fil": "Filipino", "hil": "Hiligaynon" }
+}

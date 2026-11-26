@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { createContext, useContext, useMemo, useState, type PropsWithChildren } from "react";
 
 import en from "./locales/en.json";
 import fil from "./locales/fil.json";
@@ -47,10 +41,9 @@ function writeStoredLocale(locale: Locale): void {
 }
 
 function translate(map: MessageMap, key: string): string {
-  const value = key.split(".").reduce<unknown>(
-    (acc, part) => (acc as Record<string, unknown> | undefined)?.[part],
-    map,
-  );
+  const value = key
+    .split(".")
+    .reduce<unknown>((acc, part) => (acc as Record<string, unknown> | undefined)?.[part], map);
   return typeof value === "string" ? value : key;
 }
 
