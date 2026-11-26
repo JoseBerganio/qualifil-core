@@ -261,6 +261,7 @@ Automated testing is required throughout development.
 
 - Backend: pytest and Django test utilities
 - AI service: pytest
+- Repository root: `python -m pytest` runs both Python suites
 - Shared client: Vitest
 - Web: Vitest, jsdom, and Testing Library
 - Mobile: `jest-expo` and React Native Testing Library

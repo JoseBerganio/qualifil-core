@@ -59,6 +59,7 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
 ### Fixed
 - An unreachable database during `manage.py check` now produces the `api.W001` warning instead of a hard error, and the database connectivity test skips instead of failing when PostgreSQL is not running locally.
 - CI web and mobile jobs now fail instead of silently skipping when their manifests are missing.
+- Root-level `pytest` now collects both the backend and AI service suites using a shared `pytest.ini` with the correct Django settings, import paths, and import mode.
 
 ### Security
 - Secrets and credentials are read from environment variables so they stay out of version control.

@@ -120,10 +120,11 @@ The root `prepare` script builds it automatically after `npm install`/`npm ci`.
 ## 8. Tests and Quality Checks
 
 ```sh
-# Backend
-python -m pytest backend
+# All Python tests from the repository root
+python -m pytest
 
-# AI service
+# Or each service independently
+python -m pytest backend
 python -m pytest ai-service
 
 # Shared client
