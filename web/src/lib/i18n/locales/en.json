@@ -1,0 +1,17 @@
+{
+  "app": { "title": "QUALIFIL" },
+  "nav": { "status": "Application status" },
+  "language-group-label": "Select language",
+  "appStatus": {
+    "pageTitle": "Application status",
+    "pageDescription": "Live status of the QUALIFIL backend services.",
+    "environment": "Environment",
+    "version": "Version",
+    "statusLabel": "Status",
+    "status": { "ok": "Operational", "degraded": "Degraded", "unknown": "Unknown" },
+    "loading": "Loading...",
+    "error": "Could not load application status",
+    "retry": "Try again"
+  },
+  "language": { "en": "English", "fil": "Filipino", "hil": "Hiligaynon" }
+}

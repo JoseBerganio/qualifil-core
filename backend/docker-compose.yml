@@ -1,0 +1,69 @@
+# QUALIFIL backend — Docker Compose services.
+# Infrastructure for the Django backend, PostgreSQL 18 (pgvector), Redis and
+# the Celery worker. Run from the backend directory: `docker compose up -d`.
+services:
+  db:
+    image: pgvector/pgvector:pg18
+    env_file: ../.env
+    environment:
+      POSTGRES_DB: qualifil
+      POSTGRES_USER: qualifil
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - qualifil_data:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/01-pgvector.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qualifil -d qualifil"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+  ai:
+    build: ../ai-service
+    env_file: ../.env
+    environment:
+      AI_SERVICE_HOST: 0.0.0.0
+      AI_SERVICE_PORT: 8001
+    ports:
+      - "${AI_SERVICE_PORT:-8001}:8001"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8001/health/live')"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  worker:
+    build: .
+    env_file: ../.env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+    command: >
+      celery -A config worker --loglevel=info
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_started }
+
+  web:
+    build: .
+    env_file: ../.env
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_started }
+
+volumes:
+  qualifil_data:

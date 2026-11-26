@@ -1,0 +1,23 @@
+{
+  "app": { "title": "QUALIFIL" },
+  "nav": { "connectivity": "Backend connectivity", "settings": "Settings" },
+  "language-group-label": "Select language",
+  "connectivity": {
+    "title": "Backend connectivity",
+    "description": "Check that this device can reach the QUALIFIL backend.",
+    "environment": "Environment",
+    "version": "Version",
+    "statusLabel": "Status",
+    "status": { "ok": "Operational", "degraded": "Degraded", "unknown": "Unknown" },
+    "loading": "Checking the backend...",
+    "error": "Could not reach the backend",
+    "retry": "Try again",
+    "openSettings": "Language settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Choose the language used across the application.",
+    "storageNote": "Access tokens are stored with the platform secure store. Web builds use in-memory storage until authentication is implemented in v0.2.0."
+  },
+  "language": { "en": "English", "fil": "Filipino", "hil": "Hiligaynon" }
+}

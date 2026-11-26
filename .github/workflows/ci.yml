@@ -21,6 +21,25 @@ jobs:
     name: Backend Tests
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18
+        env:
+          POSTGRES_DB: qualifil_test
+          POSTGRES_USER: qualifil_test
+          POSTGRES_PASSWORD: qualifil_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U qualifil_test" --health-interval 10s
+          --health-timeout 5s --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://qualifil_test:qualifil_test@localhost:5432/qualifil_test
+      CELERY_BROKER_URL: redis://localhost:6379/1
+      CELERY_RESULT_BACKEND: redis://localhost:6379/2
+      REDIS_URL: redis://localhost:6379/0
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,22 +54,11 @@ jobs:
       - name: Install backend dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f backend/requirements/dev.txt ]; then
-            pip install -r backend/requirements/dev.txt
-          elif [ -f backend/requirements.txt ]; then
-            pip install -r backend/requirements.txt
-          else
-            echo "No backend requirements file found yet; skipping dependency installation."
-          fi
+          pip install -r backend/requirements/dev.txt
 
       - name: Run backend tests
         working-directory: backend
-        run: |
-          if [ -d tests ] || find . -name "test_*.py" -o -name "*_tests.py" | grep -q .; then
-            python -m pytest
-          else
-            echo "No backend tests found yet."
-          fi
+        run: python -m pytest
 
   ai-service-tests:
     name: AI Service Tests
@@ -69,21 +77,23 @@ jobs:
       - name: Install AI service dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f ai-service/requirements.txt ]; then
+          if [ -f ai-service/requirements-dev.txt ]; then
+            pip install -r ai-service/requirements-dev.txt
+          elif [ -f ai-service/requirements.txt ]; then
             pip install -r ai-service/requirements.txt
           elif [ -f ai-service/pyproject.toml ]; then
             pip install ai-service
           else
-            echo "No AI service dependency manifest found yet; skipping dependency installation."
+            echo "No AI service dependency manifest found; skipping dependency installation."
           fi
 
       - name: Run AI service tests
         working-directory: ai-service
         run: |
           if [ -d tests ] || find . -name "test_*.py" -o -name "*_tests.py" | grep -q .; then
-            python -m pytest
+            python -m pytest -q
           else
-            echo "No AI service tests found yet."
+            echo "No AI service tests found."
           fi
 
   web-checks:
@@ -99,29 +109,24 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install web dependencies
-        working-directory: web
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Build shared API client
+        run: npm run build -w @qualifil/api-client
+
+      - name: Run shared client checks
         run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          elif [ -f package.json ]; then
-            npm install
-          else
-            echo "No web package manifest found yet; skipping web checks."
-          fi
+          npm run lint -w @qualifil/api-client
+          npm test -w @qualifil/api-client
 
       - name: Run web checks
-        working-directory: web
         run: |
-          if [ -f package.json ]; then
-            npm run build --if-present
-            npm run lint --if-present
-            npm test -- --run
-          else
-            echo "Web application has not been initialized yet."
-          fi
+          npm run build -w qualifil-web
+          npm run lint -w qualifil-web
+          npm test -w qualifil-web -- --run
 
   mobile-checks:
     name: Mobile Checks
@@ -136,26 +141,16 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: mobile/package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install mobile dependencies
-        working-directory: mobile
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          elif [ -f package.json ]; then
-            npm install
-          else
-            echo "No mobile package manifest found yet; skipping mobile checks."
-          fi
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Build shared API client
+        run: npm run build -w @qualifil/api-client
 
       - name: Run mobile checks
-        working-directory: mobile
         run: |
-          if [ -f package.json ]; then
-            npm run lint --if-present
-            npm test -- --run
-            npx tsc --noEmit
-          else
-            echo "Mobile application has not been initialized yet."
-          fi
+          npm run lint -w qualifil-mobile
+          npm run typecheck -w qualifil-mobile
+          npm test -w qualifil-mobile -- --watchAll=false --runInBand

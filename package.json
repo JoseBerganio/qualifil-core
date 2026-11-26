@@ -1,0 +1,24 @@
+{
+  "name": "qualifil",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "web",
+    "mobile"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build:api-client": "npm run build -w @qualifil/api-client",
+    "prepare": "npm run build:api-client",
+    "lint": "npm run lint -w @qualifil/api-client && npm run lint -w qualifil-web && npm run lint -w qualifil-mobile",
+    "test": "npm run test -w @qualifil/api-client && npm run test -w qualifil-web -- --run && npm run test -w qualifil-mobile -- --watchAll=false --runInBand",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
+}
