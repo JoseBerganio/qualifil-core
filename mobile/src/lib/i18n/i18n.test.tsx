@@ -1,3 +1,4 @@
+import { describe, expect, it } from "@jest/globals";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 import { Pressable, Text, View } from "react-native";
 

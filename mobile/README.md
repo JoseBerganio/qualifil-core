@@ -39,6 +39,11 @@ npm test -w qualifil-mobile
 ## Notes
 
 - The API base URL comes from `EXPO_PUBLIC_API_BASE_URL`.
+- `tsconfig.json` mirrors the Expo SDK 58 base compiler options inline instead of
+  extending `expo/tsconfig.base`. This keeps editor/TypeScript 7 resolution
+  working in the npm workspace; update it if the Expo base config changes.
+- Test files import Jest globals from `@jest/globals` so no global type packages
+  are required.
 - Access tokens are abstracted behind `TokenStorage`. Native builds use
   `expo-secure-store`; web falls back to in-memory storage until the v0.2.0
   authentication work introduces an httpOnly-cookie flow.

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
@@ -10,7 +11,7 @@ jest.mock("../lib/api/status", () => ({
   getAppStatus: jest.fn(),
 }));
 
-const mockedGetAppStatus = getAppStatus as jest.MockedFunction<typeof getAppStatus>;
+const mockedGetAppStatus = jest.mocked(getAppStatus);
 
 type Navigation = NativeStackScreenProps<RootStackParamList, "Connectivity">["navigation"];
 
