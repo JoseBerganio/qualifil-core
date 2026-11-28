@@ -6,9 +6,11 @@ development.py and testing.py adjust the shared base for their environments.
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
+from corsheaders.defaults import default_headers
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
@@ -64,6 +66,15 @@ CORS_ALLOWED_ORIGINS = [
     if origin.strip()
 ]
 CORS_ALLOW_CREDENTIALS = _get_bool("DJANGO_CORS_ALLOW_CREDENTIALS", False)
+# The web client selects the cookie transport explicitly so CORS must allow the
+# custom negotiation header on cross-origin deployments.
+CORS_ALLOW_HEADERS = (*default_headers, "x-auth-mode")
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in _get_env("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -74,6 +85,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "api",
     "apps.accounts",
     "apps.audit",
@@ -87,6 +100,8 @@ INSTALLED_APPS = [
     "apps.residents",
     "apps.reviews",
 ]
+
+AUTH_USER_MODEL = "accounts.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -229,12 +244,56 @@ STORAGES = {
 # ---------------------------------------------------------------------------
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [],
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "apps.accounts.authentication.CookieJWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": int(os.environ.get("DEFAULT_PAGE_SIZE", 50)),
     "EXCEPTION_HANDLER": "api.errors.exception_handler",
+    "DEFAULT_THROTTLE_RATES": {
+        "login": _get_env("AUTH_LOGIN_THROTTLE_RATE", "10/min"),
+        "register": _get_env("AUTH_REGISTER_THROTTLE_RATE", "5/hour"),
+        "refresh": _get_env("AUTH_REFRESH_THROTTLE_RATE", "60/min"),
+    },
 }
+
+# ---------------------------------------------------------------------------
+# Authentication (SimpleJWT)
+# ---------------------------------------------------------------------------
+
+JWT_ACCESS_TOKEN_LIFETIME_MINUTES = int(
+    _get_env("JWT_ACCESS_TOKEN_LIFETIME_MINUTES", "30")
+)
+JWT_REFRESH_TOKEN_LIFETIME_DAYS = int(_get_env("JWT_REFRESH_TOKEN_LIFETIME_DAYS", "7"))
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=JWT_ACCESS_TOKEN_LIFETIME_MINUTES),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=JWT_REFRESH_TOKEN_LIFETIME_DAYS),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+}
+
+# httpOnly cookie transport used by the web client. Mobile clients keep the
+# bearer-token transport and store tokens in the platform secure store.
+AUTH_COOKIE_ACCESS_NAME = _get_env("JWT_ACCESS_COOKIE_NAME", "qualifil_access")
+AUTH_COOKIE_REFRESH_NAME = _get_env("JWT_REFRESH_COOKIE_NAME", "qualifil_refresh")
+AUTH_COOKIE_SECURE = _get_bool("JWT_COOKIE_SECURE", not DEBUG)
+AUTH_COOKIE_SAMESITE = _get_env("JWT_COOKIE_SAMESITE", "Lax")
+AUTH_COOKIE_DOMAIN = _get_env("JWT_COOKIE_DOMAIN") or None
+AUTH_COOKIE_PATH = "/"
+
+AUTH_MAX_FAILED_LOGIN_ATTEMPTS = int(
+    _get_env("AUTH_MAX_FAILED_LOGIN_ATTEMPTS", "5")
+)
+AUTH_LOCKOUT_MINUTES = int(_get_env("AUTH_LOCKOUT_MINUTES", "15"))
 
 # ---------------------------------------------------------------------------
 # Structured request logging

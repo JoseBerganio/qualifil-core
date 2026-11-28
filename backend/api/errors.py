@@ -44,6 +44,7 @@ class BadRequest(APIError):
 
     default_detail = "Invalid request."
     default_code = "BAD_REQUEST"
+    status_code = status.HTTP_400_BAD_REQUEST
     default_status_code = status.HTTP_400_BAD_REQUEST
 
 
@@ -52,6 +53,7 @@ class Unauthorized(APIError):
 
     default_detail = "Authentication credentials were not provided."
     default_code = "UNAUTHENTICATED"
+    status_code = status.HTTP_401_UNAUTHORIZED
     default_status_code = status.HTTP_401_UNAUTHORIZED
 
 
@@ -60,6 +62,7 @@ class Forbidden(APIError):
 
     default_detail = "You do not have permission to perform this action."
     default_code = "FORBIDDEN"
+    status_code = status.HTTP_403_FORBIDDEN
     default_status_code = status.HTTP_403_FORBIDDEN
 
 
@@ -68,6 +71,7 @@ class NotFound(APIError):
 
     default_detail = "The requested resource was not found."
     default_code = "NOT_FOUND"
+    status_code = status.HTTP_404_NOT_FOUND
     default_status_code = status.HTTP_404_NOT_FOUND
 
 
@@ -76,6 +80,7 @@ class Conflict(APIError):
 
     default_detail = "The request conflicts with the current state of the resource."
     default_code = "CONFLICT"
+    status_code = status.HTTP_409_CONFLICT
     default_status_code = status.HTTP_409_CONFLICT
 
 

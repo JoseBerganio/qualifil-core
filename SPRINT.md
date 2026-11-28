@@ -368,12 +368,24 @@ Establish the React Native mobile application and its communication with the sha
 
 ## Sprint 02A — Authentication
 
-**Branch:** `sprint/02a-authentication`  
-**Duration:** 5 working days  
+**Status: Completed**
+
+**Branch:** `sprint/02a-authentication`
+
+**Duration:** 5 working days
+
 **Dependencies:** 01B
 
 ### Objective
 Implement secure user authentication and token management.
+
+### Implementation Summary
+- Custom UUID `accounts.User` with email login, base roles, password validation, failure counting, and timed lockout.
+- SimpleJWT access/refresh rotation with DB-backed blacklisting.
+- Bearer-token transport for mobile and httpOnly cookie transport with CSRF protection for web.
+- Registration, login, refresh, logout, `me`, change-password, and CSRF endpoints under `/api/v1/auth/`.
+- Shared API client auth helpers with 401 refresh-retry and mobile secure refresh-token storage.
+- Contract documented in `docs/api/AUTHENTICATION.md`.
 
 ### Implementation Tasks
 
@@ -405,12 +417,20 @@ Implement secure user authentication and token management.
 
 ## Sprint 02B — Organizations and Role-Based Access Control
 
+**Status: Completed**  
 **Branch:** `sprint/02b-organizations-rbac`  
 **Duration:** 4 working days  
 **Dependencies:** 02A
 
 ### Objective
 Establish LGU and barangay organizational structures and server-side authorization.
+
+### Implementation Summary
+- Implemented `LGU`, `Barangay`, and `OrganizationMembership` models with UUID primary keys, normalized codes, and database uniqueness/scope constraints.
+- Implemented server-side DRF role permissions (`IsSystemAdmin`, `IsResident`, `IsBarangayOfficial`, `IsLGUPersonnel`, `IsLGUAdmin`, `HasOrganizationRole`, `require_organization_roles`) and reusable `OrganizationScopedMixin` / `scope_queryset_for_user`.
+- Added `/api/v1/organizations/` endpoints for LGUs, barangays, and membership assignment/deactivation with cross-barangay and cross-LGU isolation, and included active `memberships` on `/api/v1/auth/me/`.
+- Added idempotent `seed_organizations` management command seeding City of Silay (`SILAY`) and 16 barangays.
+- Updated `@qualifil/api-client` with organization types and methods; documented contract in `docs/api/ORGANIZATIONS.md`.
 
 ### Implementation Tasks
 

@@ -37,16 +37,27 @@ describe("api client", () => {
   });
 
   describe("apiPost", () => {
-    it("posts JSON and returns the parsed body", async () => {
-      const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ created: true }));
+    it("primes CSRF, posts JSON, and sends cookies", async () => {
+      const fetchMock = vi.fn().mockImplementation((url: string) => {
+        if (url === "/api/v1/auth/csrf/") {
+          return Promise.resolve(jsonResponse({ csrfToken: "csrf-token" }));
+        }
+        return Promise.resolve(jsonResponse({ created: true }));
+      });
       vi.stubGlobal("fetch", fetchMock);
 
       const data = await apiPost("/api/v1/residents/", { name: "Jose" });
 
       expect(data).toEqual({ created: true });
-      const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+      const postCall = fetchMock.mock.calls.find(([url]) => url === "/api/v1/residents/") as [
+        string,
+        RequestInit,
+      ];
+      const [, init] = postCall;
       expect(init.method).toBe("POST");
       expect(init.body).toBe(JSON.stringify({ name: "Jose" }));
+      expect(init.credentials).toBe("include");
+      expect((init.headers as Record<string, string>)["X-CSRFToken"]).toBe("csrf-token");
     });
   });
 });

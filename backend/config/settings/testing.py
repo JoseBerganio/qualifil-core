@@ -17,3 +17,14 @@ CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+
+# Optional local fallback for machines without a reachable PostgreSQL test
+# database. CI always runs against PostgreSQL; use this only for local checks:
+#   $env:DJANGO_TEST_DATABASE = "sqlite"; python -m pytest
+if os.environ.get("DJANGO_TEST_DATABASE", "").strip().lower() == "sqlite":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.environ.get("DJANGO_TEST_SQLITE_NAME", ":memory:"),
+        }
+    }

@@ -10,6 +10,10 @@ mobile app on a development machine.
 - Docker Desktop (optional, recommended for PostgreSQL/Redis)
 - Expo Go on a physical device, or an Android/iOS simulator
 
+Before starting, review [`DEPENDENCY_CHECKLIST.md`](DEPENDENCY_CHECKLIST.md) for
+the full list of downloads, binaries, credentials, and API keys that must be
+provided outside the repository.
+
 ## 1. Environment Variables
 
 The repository uses a single shared `.env` file at the repository root. The
@@ -140,6 +144,19 @@ npm test -w qualifil-mobile -- --watchAll=false --runInBand
 npm run typecheck -w qualifil-mobile
 npm run lint -w qualifil-mobile
 ```
+
+Python tests use PostgreSQL through `DATABASE_URL`, matching CI. On a local
+machine without a reachable PostgreSQL test database, an explicit SQLite fallback
+is available:
+
+```sh
+# PowerShell
+$env:DJANGO_TEST_DATABASE = "sqlite"
+python -m pytest
+```
+
+This fallback is opt-in and must not be used in CI or as a substitute for
+PostgreSQL integration verification.
 
 Formatting is handled by Prettier:
 
