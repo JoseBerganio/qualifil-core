@@ -32,6 +32,42 @@ export class ApiError extends Error {
 
 export type AuthMode = "bearer" | "cookie";
 
+export interface LguSummary {
+  id: string;
+  code: string;
+  name: string;
+}
+
+export interface LguRecord extends LguSummary {
+  province: string;
+  region: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BarangaySummary {
+  id: string;
+  code: string;
+  name: string;
+}
+
+export interface BarangayRecord extends BarangaySummary {
+  lgu: LguSummary;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserOrganizationMembership {
+  id: string;
+  role: string;
+  lgu: LguSummary;
+  barangay: BarangaySummary | null;
+  is_active: boolean;
+  assigned_at: string;
+}
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -40,6 +76,7 @@ export interface AuthUser {
   last_name: string;
   full_name: string;
   role: string;
+  memberships?: UserOrganizationMembership[];
   is_active: boolean;
   is_staff: boolean;
   created_at: string;
@@ -81,6 +118,12 @@ export interface AuthApi {
   logout(refreshToken?: string): Promise<void>;
   getMe(): Promise<AuthUser>;
   changePassword(input: ChangePasswordInput): Promise<void>;
+}
+
+export interface OrganizationsApi {
+  listLgus(): Promise<LguRecord[]>;
+  listBarangays(lguId: string): Promise<BarangayRecord[]>;
+  listMyMemberships(): Promise<UserOrganizationMembership[]>;
 }
 
 export interface ApiClientOptions {
@@ -125,6 +168,7 @@ export interface ApiClient {
   delete<T>(path: string, options?: ApiRequestOptions): Promise<T>;
   request<T>(method: string, path: string, body?: unknown, options?: ApiRequestOptions): Promise<T>;
   auth: AuthApi;
+  organizations: OrganizationsApi;
 }
 
 const AUTH_PATHS = {
@@ -474,6 +518,21 @@ export function createApiClient(options: ApiClientOptions = {}): ApiClient {
     },
   };
 
+  const organizations: OrganizationsApi = {
+    listLgus() {
+      return request<LguRecord[]>("GET", "/api/v1/organizations/lgus/");
+    },
+    listBarangays(lguId) {
+      return request<BarangayRecord[]>(
+        "GET",
+        `/api/v1/organizations/lgus/${encodeURIComponent(lguId)}/barangays/`,
+      );
+    },
+    listMyMemberships() {
+      return request<UserOrganizationMembership[]>("GET", "/api/v1/organizations/memberships/me/");
+    },
+  };
+
   return {
     request,
     get: (path, requestOptions) => request("GET", path, undefined, requestOptions),
@@ -482,5 +541,6 @@ export function createApiClient(options: ApiClientOptions = {}): ApiClient {
     patch: (path, body, requestOptions) => request("PATCH", path, body, requestOptions),
     delete: (path, requestOptions) => request("DELETE", path, undefined, requestOptions),
     auth,
+    organizations,
   };
 }

@@ -4,7 +4,7 @@
 
 - Project: QUALIFIL
 - Current target release: v0.2.0
-- Current sprint: 02A — Authentication
+- Current sprint: 02B — Organizations and Role-Based Access Control
 - Overall status: In Progress
 - Last updated: 2026-11-28
 
@@ -33,7 +33,7 @@ Status: Completed
 Status: In Progress
 
 - [x] 02A — Authentication
-- [ ] 02B — Organizations and Role-Based Access Control
+- [x] 02B — Organizations and Role-Based Access Control
 - [ ] 02C — Audit Logging
 - [ ] 02D — Resident Registration and Profile
 - [ ] 02E — Assistance Program Management
@@ -78,6 +78,20 @@ Status: Planned
 - [ ] 05G — Deployment Preparation and Release
 
 ## Active Work
+
+### Sprint 02B — Organizations and Role-Based Access Control
+
+Branch: `sprint/02b-organizations-rbac`
+
+Implemented:
+
+- `organizations.LGU`, `organizations.Barangay`, and `organizations.OrganizationMembership` models with UUID primary keys, normalized codes, and database uniqueness/scope constraints.
+- Staff membership assignment and deactivation services syncing `accounts.User.role` with active memberships while ensuring unassigned staff accounts cannot access org data.
+- Server-side DRF permission classes (`IsSystemAdmin`, `IsResident`, `IsBarangayOfficial`, `IsLGUPersonnel`, `IsLGUAdmin`, `HasOrganizationRole`, `require_organization_roles`) and reusable `OrganizationScopedMixin` / `scope_queryset_for_user`.
+- Organization and membership endpoints under `/api/v1/organizations/` with barangay and LGU isolation enforcement, plus active `memberships` included on `/api/v1/auth/me/`.
+- Idempotent `seed_organizations` management command seeding City of Silay (`SILAY`) and its 16 barangays.
+- Typed `organizations` helpers and membership types in `@qualifil/api-client`.
+- Organization API contract in `docs/api/ORGANIZATIONS.md`.
 
 ### Sprint 02A — Authentication
 
@@ -171,6 +185,7 @@ Implemented before Sprint 01E:
 | 2026-11-24 | 01D | React web application foundation with Vite, TypeScript, Tailwind, shadcn/ui style components, routing, localization, Django API client, initial application status page, and CI web checks. | `sprint/01d-web-foundation` |
 | 2026-11-26 | 01E | Expo mobile application foundation with navigation, localization, secure token storage, shared API client integration, backend connectivity screen, and mobile CI checks. Also introduced the shared `@qualifil/api-client` workspace and fixed environment, CORS, lint, and CI foundations. | `sprint/01e-mobile-foundation` |
 | 2026-11-28 | 02A | Authentication with a custom UUID user model, SimpleJWT rotation/blacklisting, httpOnly cookie transport with CSRF for web, bearer transport for mobile, throttling and account lockout, typed shared API client auth methods, and an API contract document. | `sprint/02a-authentication` |
+| 2026-11-28 | 02B | Organizations and RBAC with `LGU`, `Barangay`, and `OrganizationMembership` models, server-side role permissions, reusable queryset scoping, Silay City seeding, `/api/v1/organizations/` endpoints, and shared API client types. | `sprint/02b-organizations-rbac` |
 
 ## Change Log for This File
 
@@ -181,3 +196,4 @@ Record meaningful progress updates here. Detailed version changes belong in `CHA
 - 2026-11-24 — Recorded Sprint 01D web foundation completion.
 - 2026-11-26 — Recorded Sprint 01E mobile foundation completion and cross-cutting foundation fixes.
 - 2026-11-28 — Recorded Sprint 02A authentication completion and v0.2.0 start.
+- 2026-11-28 — Recorded Sprint 02B organizations and RBAC completion.

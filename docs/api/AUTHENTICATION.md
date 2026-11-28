@@ -70,13 +70,14 @@ Requires authentication. Returns the current user's summary:
   "last_name": "",
   "full_name": "",
   "role": "RESIDENT",
+  "memberships": [],
   "is_active": true,
   "is_staff": false,
   "created_at": "2026-11-28T00:00:00Z"
 }
 ```
 
-Organization memberships are added in Sprint 02B.
+Active staff `OrganizationMembership` objects are returned in `memberships` (introduced in Sprint 02B; see [ORGANIZATIONS.md](ORGANIZATIONS.md)).
 
 ### `POST /api/v1/auth/change-password/`
 

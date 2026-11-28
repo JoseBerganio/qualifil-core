@@ -7,6 +7,13 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
 ## [Unreleased]
 
 ### Added
+- Organizations and RBAC sprint (02B) for v0.2.0:
+  - `organizations.LGU`, `organizations.Barangay`, and `organizations.OrganizationMembership` models with UUID primary keys, case-insensitive code/name constraints, and staff scope invariants.
+  - Reusable DRF permission classes (`IsSystemAdmin`, `IsResident`, `IsBarangayOfficial`, `IsLGUPersonnel`, `IsLGUAdmin`, `HasOrganizationRole`, `require_organization_roles`) and `OrganizationScopedMixin` / `scope_queryset_for_user` for barangay and LGU isolation.
+  - LGU, barangay, and staff membership endpoints under `/api/v1/organizations/` and active `memberships` payload on `GET /api/v1/auth/me/`.
+  - Idempotent `seed_organizations` management command seeding City of Silay and 16 barangays.
+  - Typed organization endpoints and membership DTOs in `@qualifil/api-client`.
+  - Organization API contract in `docs/api/ORGANIZATIONS.md`.
 - Authentication sprint (02A) for v0.2.0:
   - Custom UUID `accounts.User` with normalized email login, base roles, password-hash fields, failed-login counter, and lockout timestamp.
   - SimpleJWT access/refresh tokens with rotation and DB-backed blacklisting.

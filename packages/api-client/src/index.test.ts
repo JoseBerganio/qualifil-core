@@ -252,4 +252,30 @@ describe("createApiClient", () => {
       status: 0,
     });
   });
+
+  it("exposes typed organization list and membership endpoints", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse([{ id: "lgu-1", code: "SILAY", name: "City of Silay" }]))
+      .mockResolvedValueOnce(jsonResponse([{ id: "brgy-1", code: "SILAY-BAGTIC", name: "Bagtic" }]))
+      .mockResolvedValueOnce(jsonResponse([{ id: "m-1", role: "LGU_ADMIN" }]));
+
+    const client = createApiClient({
+      baseUrl: "http://localhost:8000",
+      fetchImpl: fetchMock as unknown as typeof fetch,
+      getAccessToken: () => "access-token",
+    });
+
+    await expect(client.organizations.listLgus()).resolves.toHaveLength(1);
+    await expect(client.organizations.listBarangays("lgu-1")).resolves.toHaveLength(1);
+    await expect(client.organizations.listMyMemberships()).resolves.toHaveLength(1);
+
+    expect(fetchMock.mock.calls[0][0]).toBe("http://localhost:8000/api/v1/organizations/lgus/");
+    expect(fetchMock.mock.calls[1][0]).toBe(
+      "http://localhost:8000/api/v1/organizations/lgus/lgu-1/barangays/",
+    );
+    expect(fetchMock.mock.calls[2][0]).toBe(
+      "http://localhost:8000/api/v1/organizations/memberships/me/",
+    );
+  });
 });

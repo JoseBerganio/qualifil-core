@@ -56,6 +56,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(read_only=True)
+    memberships = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -67,8 +68,16 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "full_name",
             "role",
+            "memberships",
             "is_active",
             "is_staff",
             "created_at",
         )
         read_only_fields = fields
+
+    def get_memberships(self, obj):
+        from apps.organizations.selectors import get_active_memberships
+        from apps.organizations.serializers import UserMembershipSummarySerializer
+
+        memberships = get_active_memberships(obj)
+        return UserMembershipSummarySerializer(memberships, many=True).data
