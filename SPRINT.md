@@ -368,12 +368,24 @@ Establish the React Native mobile application and its communication with the sha
 
 ## Sprint 02A — Authentication
 
-**Branch:** `sprint/02a-authentication`  
-**Duration:** 5 working days  
+**Status: Completed**
+
+**Branch:** `sprint/02a-authentication`
+
+**Duration:** 5 working days
+
 **Dependencies:** 01B
 
 ### Objective
 Implement secure user authentication and token management.
+
+### Implementation Summary
+- Custom UUID `accounts.User` with email login, base roles, password validation, failure counting, and timed lockout.
+- SimpleJWT access/refresh rotation with DB-backed blacklisting.
+- Bearer-token transport for mobile and httpOnly cookie transport with CSRF protection for web.
+- Registration, login, refresh, logout, `me`, change-password, and CSRF endpoints under `/api/v1/auth/`.
+- Shared API client auth helpers with 401 refresh-retry and mobile secure refresh-token storage.
+- Contract documented in `docs/api/AUTHENTICATION.md`.
 
 ### Implementation Tasks
 

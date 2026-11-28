@@ -7,6 +7,14 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
 ## [Unreleased]
 
 ### Added
+- Authentication sprint (02A) for v0.2.0:
+  - Custom UUID `accounts.User` with normalized email login, base roles, password-hash fields, failed-login counter, and lockout timestamp.
+  - SimpleJWT access/refresh tokens with rotation and DB-backed blacklisting.
+  - Registration, login, refresh, logout, `me`, change-password, and CSRF endpoints under `/api/v1/auth/`.
+  - Bearer-token transport for mobile and httpOnly cookie transport with CSRF protection for web.
+  - Typed `auth` helpers, cookie support, and single-shot 401 refresh-retry in `@qualifil/api-client`.
+  - Secure refresh-token storage on mobile and cookie-backed web client configuration.
+  - Authentication API contract in `docs/api/AUTHENTICATION.md`.
 - Initial sprint and release planning structure.
 - Initial repository documentation templates.
 - QUALIFIL backend (Django + Django REST Framework) foundation for v0.1.0:
@@ -50,6 +58,8 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
   - `jest-expo` and React Native Testing Library component, API, storage, localization, and screen tests.
 
 ### Changed
+- DRF now defaults to JWT authentication and `IsAuthenticated`; health and auth endpoints opt out explicitly.
+- Web API client now uses cookie credentials and the cookie auth transport; the mobile client uses bearer tokens from secure storage.
 - Backend and AI service now load the repository-root `.env` with `python-dotenv`; real environment variables take precedence, so container and CI configuration is never overwritten.
 - `VITE_API_BASE_URL` and `EXPO_PUBLIC_API_BASE_URL` are treated as API origins rather than `/api`-suffixed paths, and Vite reads the root `.env` via `envDir`.
 - Added `django-cors-headers` with the configurable `DJANGO_CORS_ALLOWED_ORIGINS` allowlist while keeping the Vite development proxy.
@@ -58,12 +68,15 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
 - Web dependencies moved into the root npm workspace and the per-app lockfile was removed.
 
 ### Fixed
+- Custom `api.errors` exception classes now define the DRF `status_code` attribute, so `Unauthorized`, `Forbidden`, and other API errors return their intended HTTP statuses instead of 500.
 - An unreachable database during `manage.py check` now produces the `api.W001` warning instead of a hard error, and the database connectivity test skips instead of failing when PostgreSQL is not running locally.
 - CI web and mobile jobs now fail instead of silently skipping when their manifests are missing.
 - Root-level `pytest` now collects both the backend and AI service suites using a shared `pytest.ini` with the correct Django settings, import paths, and import mode.
 
 ### Security
 - Secrets and credentials are read from environment variables so they stay out of version control.
+- Failed logins are throttled and lock the account after repeated attempts; lockout responses use `429 TOO_MANY_REQUESTS` and invalid credentials never reveal whether an email exists.
+- Refresh tokens are revoked on rotation, logout, and password change; web cookie requests require a CSRF token and web JWTs are never stored in `localStorage`.
 
 ## [0.1.0] — Not Released
 

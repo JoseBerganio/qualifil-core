@@ -22,6 +22,7 @@ urlpatterns = [
                     ReadinessView.as_view(),
                     name="health-readiness",
                 ),
+                path("auth/", include("apps.accounts.urls")),
             ]
         ),
     ),

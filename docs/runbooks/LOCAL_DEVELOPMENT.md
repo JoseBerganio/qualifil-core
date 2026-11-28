@@ -145,6 +145,19 @@ npm run typecheck -w qualifil-mobile
 npm run lint -w qualifil-mobile
 ```
 
+Python tests use PostgreSQL through `DATABASE_URL`, matching CI. On a local
+machine without a reachable PostgreSQL test database, an explicit SQLite fallback
+is available:
+
+```sh
+# PowerShell
+$env:DJANGO_TEST_DATABASE = "sqlite"
+python -m pytest
+```
+
+This fallback is opt-in and must not be used in CI or as a substitute for
+PostgreSQL integration verification.
+
 Formatting is handled by Prettier:
 
 ```sh

@@ -5,6 +5,7 @@ import logging
 from django.conf import settings
 from django.core.cache import caches
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -13,6 +14,9 @@ logger = logging.getLogger(__name__)
 
 class LivenessView(APIView):
     """Lightweight liveness check that requires no external services."""
+
+    authentication_classes = []
+    permission_classes = [AllowAny]
 
     def get(self, request):
         return Response(
@@ -26,6 +30,9 @@ class LivenessView(APIView):
 
 class ReadinessView(APIView):
     """Readiness check for the services the backend depends on."""
+
+    authentication_classes = []
+    permission_classes = [AllowAny]
 
     def get(self, request):
         checks = {

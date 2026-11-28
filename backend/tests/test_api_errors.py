@@ -3,7 +3,14 @@
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from api.errors import error_payload
+from api.errors import (
+    BadRequest,
+    Conflict,
+    Forbidden,
+    NotFound,
+    Unauthorized,
+    error_payload,
+)
 
 
 def test_error_payload_shape():
@@ -27,6 +34,14 @@ def test_error_payload_includes_details_when_present():
     assert payload["error"]["details"] == [
         {"field": "name", "message": "This field is required."}
     ]
+
+
+def test_custom_api_errors_use_drf_status_codes():
+    assert BadRequest().status_code == 400
+    assert Unauthorized().status_code == 401
+    assert Forbidden().status_code == 403
+    assert NotFound().status_code == 404
+    assert Conflict().status_code == 409
 
 
 def test_unknown_url_returns_standard_not_found():

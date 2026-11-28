@@ -3,10 +3,10 @@
 ## Project Information
 
 - Project: QUALIFIL
-- Current target release: v0.1.0
-- Current sprint: 01E — Mobile Foundation
+- Current target release: v0.2.0
+- Current sprint: 02A — Authentication
 - Overall status: In Progress
-- Last updated: 2026-11-26
+- Last updated: 2026-11-28
 
 ## Status Definitions
 
@@ -20,7 +20,7 @@
 
 ### v0.1.0 — Project Foundation
 
-Status: In Progress
+Status: Completed
 
 - [x] 01A — Project Structure and CI Foundation
 - [x] 01B — Backend Foundation
@@ -30,9 +30,9 @@ Status: In Progress
 
 ### v0.2.0 — Authentication and Core Data
 
-Status: Planned
+Status: In Progress
 
-- [ ] 02A — Authentication
+- [x] 02A — Authentication
 - [ ] 02B — Organizations and Role-Based Access Control
 - [ ] 02C — Audit Logging
 - [ ] 02D — Resident Registration and Profile
@@ -78,6 +78,21 @@ Status: Planned
 - [ ] 05G — Deployment Preparation and Release
 
 ## Active Work
+
+### Sprint 02A — Authentication
+
+Branch: `sprint/02a-authentication`
+
+Implemented:
+
+- Custom `accounts.User` model with UUID primary key, normalized email login, base roles (default `RESIDENT`), password hash fields, failed-login counter, and lockout timestamp.
+- SimpleJWT with access/refresh rotation, refresh-token blacklisting, and DB-backed outstanding tokens.
+- Dual client transport: bearer tokens for mobile and httpOnly cookies with CSRF double-submit protection for web.
+- Registration, login, logout, refresh, `me`, change-password, and CSRF endpoints under `/api/v1/auth/`.
+- Password validation, throttling, five-attempt lockout with `429 TOO_MANY_REQUESTS`, and generic invalid-credential responses.
+- Typed auth methods, cookie support, CSRF priming, and single-shot 401 refresh-retry in `@qualifil/api-client`.
+- Secure refresh-token storage on mobile and cookie-backed web client configuration.
+- Authentication API contract in `docs/api/AUTHENTICATION.md`.
 
 ### Sprint 01C — AI Service Foundation
 
@@ -155,6 +170,7 @@ Implemented before Sprint 01E:
 | 2026-11-24 | 01C | FastAPI AI service foundation with internal authentication, health and model-status endpoints, standardized schemas/errors, Docker integration, and CI tests. | `sprint/01c-ai-service-foundation` |
 | 2026-11-24 | 01D | React web application foundation with Vite, TypeScript, Tailwind, shadcn/ui style components, routing, localization, Django API client, initial application status page, and CI web checks. | `sprint/01d-web-foundation` |
 | 2026-11-26 | 01E | Expo mobile application foundation with navigation, localization, secure token storage, shared API client integration, backend connectivity screen, and mobile CI checks. Also introduced the shared `@qualifil/api-client` workspace and fixed environment, CORS, lint, and CI foundations. | `sprint/01e-mobile-foundation` |
+| 2026-11-28 | 02A | Authentication with a custom UUID user model, SimpleJWT rotation/blacklisting, httpOnly cookie transport with CSRF for web, bearer transport for mobile, throttling and account lockout, typed shared API client auth methods, and an API contract document. | `sprint/02a-authentication` |
 
 ## Change Log for This File
 
@@ -164,3 +180,4 @@ Record meaningful progress updates here. Detailed version changes belong in `CHA
 - 2026-11-24 — Recorded Sprint 01B completion and Sprint 01C AI service foundation.
 - 2026-11-24 — Recorded Sprint 01D web foundation completion.
 - 2026-11-26 — Recorded Sprint 01E mobile foundation completion and cross-cutting foundation fixes.
+- 2026-11-28 — Recorded Sprint 02A authentication completion and v0.2.0 start.
