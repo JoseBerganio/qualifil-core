@@ -36,6 +36,7 @@ The format is based on Keep a Changelog. Version numbers follow Semantic Version
   - Root npm workspace configuration covering `packages/*`, `web`, and `mobile`.
   - Prettier, `.editorconfig`, and shared formatting scripts.
   - Local development runbook in `docs/runbooks/LOCAL_DEVELOPMENT.md`.
+  - Dependency and credentials checklist in `docs/runbooks/DEPENDENCY_CHECKLIST.md`.
 - QUALIFIL web application foundation for v0.1.0:
   - React 18, TypeScript, Vite 5, Tailwind CSS 3, and shadcn/ui style components.
   - Routing, English/Filipino/Hiligaynon localization, API client integration, and an application status page.

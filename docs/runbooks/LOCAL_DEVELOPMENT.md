@@ -10,6 +10,10 @@ mobile app on a development machine.
 - Docker Desktop (optional, recommended for PostgreSQL/Redis)
 - Expo Go on a physical device, or an Android/iOS simulator
 
+Before starting, review [`DEPENDENCY_CHECKLIST.md`](DEPENDENCY_CHECKLIST.md) for
+the full list of downloads, binaries, credentials, and API keys that must be
+provided outside the repository.
+
 ## 1. Environment Variables
 
 The repository uses a single shared `.env` file at the repository root. The
